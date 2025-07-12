@@ -1,0 +1,52 @@
+// include/pixeltree/config.hpp.in
+#pragma once
+
+#define PIXELTREE_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
+#define PIXELTREE_VERSION_MINOR @PROJECT_VERSION_MINOR@
+#define PIXELTREE_VERSION_PATCH @PROJECT_VERSION_PATCH@
+#define PIXELTREE_VERSION_STRING "@PROJECT_VERSION@"
+
+// Feature availability
+#cmakedefine PIXELTREE_HAS_PNG
+#cmakedefine PIXELTREE_HAS_OPENMP
+#cmakedefine PIXELTREE_HAS_SSE2
+#cmakedefine PIXELTREE_HAS_AVX2
+
+// Platform detection
+#cmakedefine PIXELTREE_PLATFORM_WINDOWS
+#cmakedefine PIXELTREE_PLATFORM_UNIX
+
+// Library configuration
+#cmakedefine PIXELTREE_HEADER_ONLY
+
+// Compiler and feature detection
+#ifdef PIXELTREE_HAS_SSE2
+    #include <emmintrin.h>
+    #define PIXELTREE_SIMD_SSE2 1
+#endif
+
+#ifdef PIXELTREE_HAS_AVX2
+    #include <immintrin.h>
+    #define PIXELTREE_SIMD_AVX2 1
+#endif
+
+// Thread support
+#ifdef PIXELTREE_HAS_OPENMP
+    #include <omp.h>
+    #define PIXELTREE_PARALLEL_SUPPORT 1
+#endif
+
+// Export macros for shared library
+#ifndef PIXELTREE_HEADER_ONLY
+    #ifdef PIXELTREE_PLATFORM_WINDOWS
+        #ifdef PIXELTREE_EXPORTS
+            #define PIXELTREE_API __declspec(dllexport)
+        #else
+            #define PIXELTREE_API __declspec(dllimport)
+        #endif
+    #else
+        #define PIXELTREE_API __attribute__((visibility("default")))
+    #endif
+#else
+    #define PIXELTREE_API
+#endif
