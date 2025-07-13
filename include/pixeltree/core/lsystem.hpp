@@ -1,4 +1,5 @@
 #pragma once
+
 #include "tree_structure.hpp"
 #include "random.hpp"
 #include <unordered_map>
@@ -177,3 +178,28 @@ public:
                     current_state.direction = rotate_vector(current_state.direction, -angle);
                     break;
                 }
+            }
+            
+            // Apply thickness decay
+            current_state.thickness *= params.branches.thickness_decay.get();
+            current_state.depth++;
+        }
+        
+        return tree;
+    }
+
+private:
+    // Rotate a 2D vector by angle in degrees
+    Point2Df rotate_vector(const Point2Df& vec, float angle_degrees) const {
+        const float angle_rad = angle_degrees * M_PI / 180.0f;
+        const float cos_a = std::cos(angle_rad);
+        const float sin_a = std::sin(angle_rad);
+        
+        return Point2Df{
+            vec.x * cos_a - vec.y * sin_a,
+            vec.x * sin_a + vec.y * cos_a
+        };
+    }
+};
+
+} // namespace pixeltree
